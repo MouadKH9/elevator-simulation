@@ -1,48 +1,51 @@
 package com.main.canvas;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class Elevator extends Platform{
 	
 	public static int HEIGHT = 150;
-	public static int WIDTH = 700;
+	public static int WIDTH = 250;
 	
-	private int number;
 	private Canvas canvas;
 	private ArrayList<Person> persons = new ArrayList<Person>();
+	private int elevatorY = -1;
 	
-	public Elevator(int number,Canvas canvas) {
+	public Elevator(Canvas canvas) {
 		this.canvas = canvas;
-		this.number = number;
-		
-		persons.add(new Person(0,this,canvas));
 	}
 	
 	public int getFloorY() {
-		return canvas.getBounds().height - number * HEIGHT;
+		return elevatorY + HEIGHT;
 	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
+	
+	public void goToFloor(int number) {
+		Thread thread = new Thread(() -> { 
+			
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(this.elevatorY);
+			System.out.println(canvas.floors.get(number).getFloorY());
+			while(this.elevatorY + HEIGHT != canvas.floors.get(number).getFloorY()) {
+				this.elevatorY -= 1;
+				canvas.repaint();
+			}
+		});
+		thread.start();
 	}
 	
 	public void draw(Graphics2D g2d) {
-		int ceilingY = canvas.getBounds().height - (number + 1) * HEIGHT;
-		int startX = 0;
+		if(elevatorY == -1) 
+			this.elevatorY = canvas.getBounds().height - Floor.HEIGHT;
 		
 		g2d.setColor(Color.BLACK);
-		g2d.fillRect(startX, ceilingY, WIDTH, 3);
-		g2d.fillRect(WIDTH - 3, ceilingY, 3, 70);
-		
-		g2d.setFont(new Font("Arial",Font.PLAIN,20));
-		g2d.drawString("Etage " + number, 5, ceilingY + 25);
+		g2d.drawRect(Floor.WIDTH, elevatorY, WIDTH, HEIGHT);
 		
 		persons.forEach(p->p.draw(g2d));
 	}
