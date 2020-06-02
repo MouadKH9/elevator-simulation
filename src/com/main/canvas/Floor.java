@@ -3,7 +3,10 @@ package com.main.canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 public class Floor extends Platform{
 	
@@ -17,15 +20,32 @@ public class Floor extends Platform{
 	public Floor(int number,Canvas canvas) {
 		this.canvas = canvas;
 		this.number = number;
-		
-		persons.add(new Person(0,this,canvas));
-		persons.add(new Person(1,this,canvas));
-		persons.add(new Person(2,this,canvas));
-		persons.add(new Person(3,this,canvas));
+	}
+	
+
+	public void repaint() {
+		canvas.repaint();
+	}
+	
+	public void addPerson(Person person) {
+		persons.add(person);
+	}
+	
+	public void takePerson(Person person) {
+		persons.remove(person);
+	}
+	
+	@Override
+	public int getCeilingY() {
+		return getFloorY() - HEIGHT;
 	}
 	
 	public int getFloorY() {
 		return canvas.getBounds().height - number * HEIGHT;
+	}
+	
+	public int getStartX() {
+		return WIDTH;
 	}
 
 	public int getNumber() {
@@ -36,17 +56,48 @@ public class Floor extends Platform{
 		this.number = number;
 	}
 	
+	@Override
+	public int getNextPosition() {
+		return persons.size();
+	}
+	
 	public void draw(Graphics2D g2d) {
 		int ceilingY = canvas.getBounds().height - (number + 1) * HEIGHT;
 		int startX = 0;
+
+		try {
+			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/wall.jpg")),
+					startX, ceilingY , WIDTH, HEIGHT, canvas);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(startX, ceilingY, WIDTH, 3);
-		g2d.fillRect(WIDTH - 3, ceilingY, 3, 70);
 		
 		g2d.setFont(new Font("Arial",Font.PLAIN,20));
 		g2d.drawString("Etage " + number, 5, ceilingY + 25);
 		
 		persons.forEach(p->p.draw(g2d));
 	}
+
+	@Override
+	public String toString() {
+		return "Floor [number=" + number + "]";
+	}
+
+
+	public Canvas getCanvas() {
+		return canvas;
+	}
+
+
+	public void setCanvas(Canvas canvas) {
+		this.canvas = canvas;
+	}
+	
+	
+	
+	
 }

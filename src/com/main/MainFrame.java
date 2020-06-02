@@ -41,7 +41,7 @@ public class MainFrame {
 		Canvas canvas = new Canvas();
 		frame.getContentPane().add(canvas);
 		
-		frame.setBounds(100, 100, 995, 761);
+		frame.setBounds(100, 100, 967, 761);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 

@@ -18,10 +18,10 @@ public class Person {
 	private Platform platform;
 	private Canvas canvas;
 	
-	public Person(int position,Platform platform,Canvas canvas) {
+	public Person(Platform platform,Canvas canvas) {
 		this.canvas = canvas;
 		this.platform = platform;
-		this.position = position;
+		this.position = platform.getNextPosition();
 		this.ID = ++Person.numberOfPersons;
 	}
 
@@ -33,16 +33,23 @@ public class Person {
 		this.position = position;
 	}
 	
+	public void callElevator(String direction) {
+		ElevatorCall call = new ElevatorCall(direction,this,(Floor) platform,canvas.elevator);
+		canvas.elevator.callMade(call);
+	}
+	
 	public void draw(Graphics2D g2d) {
-		int startX = Floor.WIDTH - (position + 1) * (WIDTH + 20);
+		System.out.println("Drawing person at " + platform);
+		
+		int startX = platform.getStartX() - (position + 1) * (WIDTH + 20);
 		
 		try {
 			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/person.png")),
 					startX, platform.getFloorY() - HEIGHT, WIDTH, HEIGHT, canvas);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		g2d.setColor(Color.WHITE);
 		int stringWidth = g2d.getFontMetrics().stringWidth(""+ID);
 		g2d.setFont(new Font("Arial",Font.PLAIN,18));
