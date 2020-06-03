@@ -1,12 +1,12 @@
 package com.main.canvas;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JPanel;
 
@@ -23,15 +23,19 @@ public class Canvas extends JPanel {
 		floors.add(new Floor(2,this));
 		floors.add(new Floor(3,this));
 		
-		Person person1 = new Person(floors.get(2),this);
-		floors.get(2).addPerson(person1);
-		
 		Thread thread = new Thread(() -> { 
 			try {
-				Thread.sleep(2000);
-				person1.callElevator("down");
+				Thread.sleep(1000);
+				Random random = new Random();
+				for (int i = 0; i < 5; i++) {
+					int rand = random.nextInt(floors.size());
+					Person person = new Person(floors.get(rand), this);
+					floors.get(rand).addPerson(person);
+					repaint();
+					
+					person.callElevator(rand >= floors.size()/2 ? "down" : "up");
+				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -51,6 +55,13 @@ public class Canvas extends JPanel {
 		super.paint(g);
 		
 		Graphics2D g2d = (Graphics2D) g;
+		
+		g2d.setColor(new Color(25,163,255));
+		g2d.fillRect(0, 0, 1000, 1000);
+
+		g2d.setColor(new Color(255,204,0));
+		g2d.fillOval(40, 20, 40, 40);
+		
 		floors.forEach(f->f.draw(g2d));
 
 		g2d.setColor(Color.GRAY);

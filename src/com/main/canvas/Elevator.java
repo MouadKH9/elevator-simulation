@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
@@ -21,29 +23,125 @@ public class Elevator extends Platform{
 	private int elevatorY = -1;
 	
 	
-	ActionListener taskPerformer;
-	
-	
 	private ArrayList<ElevatorCall> calls = new ArrayList<ElevatorCall>();
 	private ArrayList<ElevatorCall> currentCalls = new ArrayList<ElevatorCall>();
+
+	private Queue<DestCall> dests = new LinkedList<DestCall>();
+	
+	private boolean busy = false;
 	
 	public Elevator(Canvas canvas) {
 		this.canvas = canvas;
 		
-		taskPerformer = new ActionListener() {
+		ActionListener taskPerformer = new ActionListener() {
 		    public void actionPerformed(ActionEvent evt) {
-		    	Iterator<ElevatorCall> it = calls.iterator();
-		    	while(it.hasNext()) {
-		    		ElevatorCall call = it.next();
-		        	currentCalls.add(call);
-		        	goToFloor(call);
-		        	it.remove();
+		    	if(busy) return;
+		    	
+		    	if(dests.size()>0) {
+		    		System.out.println(dests.size());
+		    		DestCall dest = dests.poll();
+		    		dropPersonAt(dest.getPerson(), dest.getFloor());
+		    	}else{
+		    		Iterator<ElevatorCall> it = calls.iterator();
+			    	while(it.hasNext()) {
+			    		ElevatorCall call = it.next();
+			        	currentCalls.add(call);
+			        	goToFloor(call);
+			        	it.remove();
+			        	break;
+			    	}
 		    	}
+		    	
 		    }
 		};
-		Timer timer = new Timer(500 ,taskPerformer);
+		Timer timer = new Timer(1000 ,taskPerformer);
 		timer.start();
 	}
+	
+	public void goToFloor(ElevatorCall call) {
+		Thread thread = new Thread(() -> {
+			try {
+				busy = true;
+				Floor floor = call.getFloor();
+				moveToY(floor.getCeilingY());
+				currentCalls.remove(call);
+				
+				int destination = call.getPerson().goToElevator(call.getFloor(),call.getElevator());
+				goToDestination(destination, call.getPerson());
+				busy=false;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		},"goToFloor");
+		thread.start();
+	}
+	
+	public void goToDestination(int number, Person person) {
+		dests.add(new DestCall(person, canvas.floors.get(number), this));
+	}
+	
+	public void dropPersonAt(Person person, Floor floor) {
+		Thread thread = new Thread(() -> {
+			try {
+				busy = true;
+				ArrayList<DestCall> extraDests = moveToY(floor.getCeilingY());
+				person.goToFloor(floor,this);
+				extraDests.forEach(dest->{
+					dropPersonAt(dest.getPerson(), dest.getFloor());
+				});
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		},"goToFloor");
+		thread.start();
+	}
+	
+	public void draw(Graphics2D g2d) {
+		if(elevatorY == -1) 
+			this.elevatorY = canvas.getBounds().height - Floor.HEIGHT;
+		
+		g2d.setColor(Color.BLACK);
+		try {
+			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/elevator.png")),
+					Floor.WIDTH, elevatorY , WIDTH, HEIGHT, canvas);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// to avoid ConcurrentModification
+		ArrayList<Person> tempP = new ArrayList<Person>(persons);
+
+		
+		tempP.forEach(p -> p.draw(g2d));
+	}
+	
+	public ArrayList<DestCall> moveToY(int Y) throws InterruptedException {
+		String direction = elevatorY - Y > 0 ? "up" : "down";
+		ArrayList<DestCall> extraDests = new ArrayList<DestCall>();
+		while(elevatorY < Y - 5 || elevatorY > Y + 5 ) {
+			Thread.sleep(50);
+			this.elevatorY += 5 * ((elevatorY < Y - 5) ? 1 : -1);
+			canvas.repaint();
+			
+			canvas.floors.forEach(floor -> {
+				if(elevatorY >= floor.getCeilingY() - 5 && elevatorY <= floor.getCeilingY() + 5) {
+					Iterator<ElevatorCall> it = calls.iterator();
+			    	while(it.hasNext()) {
+			    		ElevatorCall call = it.next();
+			    		if(!call.getFloor().equals(floor) || !direction.equals(call.getDirection())) continue;
+			    		Floor destFloor = canvas.floors.get(call.getPerson().goToElevator(call.getFloor(), this));
+			    		DestCall destCall =new DestCall(call.getPerson(), destFloor, this);
+			        	extraDests.add(destCall);
+			        	it.remove();
+			    	}
+				}
+			});
+		}
+		this.elevatorY = Y;
+		return extraDests;
+	}
+	
 	
 	public void callMade(ElevatorCall call) {
 		calls.add(call);
@@ -53,6 +151,9 @@ public class Elevator extends Platform{
 		persons.add(person);
 	}
 	
+	public void takePerson(Person person) {
+		persons.remove(person);
+	}
 	
 	@Override
 	public int getNextPosition() {
@@ -74,51 +175,6 @@ public class Elevator extends Platform{
 		return Floor.WIDTH + WIDTH;
 	}
 	
-	public void repaint() {
-		canvas.repaint();
-	}
-	
-
-	
-	public void goToFloor(ElevatorCall call) {
-		Thread thread = new Thread(() -> {
-			try {
-				Floor floor = call.getFloor();
-				while(elevatorY < floor.getCeilingY() - 5 || elevatorY > floor.getCeilingY() + 5 ) {
-					Thread.sleep(50);
-					this.elevatorY -= 5;
-					canvas.repaint();
-				}
-				this.elevatorY = floor.getCeilingY();
-				
-				currentCalls.remove(call);
-				
-				call.getFloor().takePerson(call.getPerson());
-				call.getElevator().addPerson(call.getPerson());
-				call.getFloor().getCanvas().repaint();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		},"goToFloor");
-		thread.start();
-	}
-	
-	public void draw(Graphics2D g2d) {
-		if(elevatorY == -1) 
-			this.elevatorY = canvas.getBounds().height - Floor.HEIGHT;
-		
-		g2d.setColor(Color.BLACK);
-		try {
-			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/elevator.png")),
-					Floor.WIDTH, elevatorY , WIDTH, HEIGHT, canvas);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		persons.forEach(p -> p.draw(g2d));
-	}
-	
 
 	public Canvas getCanvas() {
 		return canvas;
@@ -130,7 +186,7 @@ public class Elevator extends Platform{
 
 	@Override
 	public String toString() {
-		return "Elevator []";
+		return "Elevator [number of persons: " + persons.size() + "]";
 	}
 	
 	

@@ -65,21 +65,22 @@ public class Floor extends Platform{
 		int ceilingY = canvas.getBounds().height - (number + 1) * HEIGHT;
 		int startX = 0;
 
-		try {
-			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/wall.jpg")),
-					startX, ceilingY , WIDTH, HEIGHT, canvas);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		g2d.setColor(new Color(0, 45, 119));
+		g2d.fillRect(startX, ceilingY , WIDTH, HEIGHT);
 		
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(new Color(150,55,0));
 		g2d.fillRect(startX, ceilingY, WIDTH, 3);
 		
-		g2d.setFont(new Font("Arial",Font.PLAIN,20));
-		g2d.drawString("Etage " + number, 5, ceilingY + 25);
+		g2d.setColor(new Color(255,93,0));
+		g2d.fillRect(startX, ceilingY + HEIGHT - 6, WIDTH, 6);
 		
-		persons.forEach(p->p.draw(g2d));
+		g2d.setFont(new Font("Arial",Font.PLAIN,23));
+		g2d.setColor(Color.WHITE);
+		g2d.drawString("Etage " + number, 5, ceilingY + 25);
+
+		// to avoid ConcurrentModification
+		ArrayList<Person> tempP = new ArrayList<Person>(persons);
+		tempP.forEach(p->p.draw(g2d));
 	}
 
 	@Override
@@ -95,6 +96,12 @@ public class Floor extends Platform{
 
 	public void setCanvas(Canvas canvas) {
 		this.canvas = canvas;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Floor)) return false;
+		return ((Floor) obj).getNumber() == number;
 	}
 	
 	
