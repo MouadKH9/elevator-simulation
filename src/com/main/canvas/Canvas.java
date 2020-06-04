@@ -23,6 +23,11 @@ public class Canvas extends JPanel {
 		floors.add(new Floor(2,this));
 		floors.add(new Floor(3,this));
 		
+		this.addPersons();
+	}
+	
+	public void addPersons(){
+		if(Person.numberOfPersons >= 2 ) return;
 		Thread thread = new Thread(() -> { 
 			try {
 				Thread.sleep(1000);
@@ -40,14 +45,6 @@ public class Canvas extends JPanel {
 			}
 		});
 		thread.start();
-		
-		addMouseListener(new MouseAdapter() {
-		     @Override
-		     public void mouseClicked(MouseEvent mouseEvent) {
-		    	 System.out.println("(" + mouseEvent.getX() + "," + mouseEvent.getY() + ")");
-		     }
-		});
-		
 	}
 	
 	@Override

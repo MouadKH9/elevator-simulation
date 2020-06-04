@@ -113,6 +113,10 @@ public class Person {
 		
 		platform.takePerson(this);
 		canvas.repaint();
+		
+		numberOfPersons--;
+		if(numberOfPersons < 2)
+			canvas.addPersons();
 	}
 	
 	

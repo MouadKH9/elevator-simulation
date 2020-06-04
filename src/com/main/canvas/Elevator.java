@@ -35,7 +35,6 @@ public class Elevator extends Platform{
 		
 		ActionListener taskPerformer = new ActionListener() {
 		    public void actionPerformed(ActionEvent evt) {
-		    	System.out.println(busy);
 		    	if(busy) return;
 		    	
 		    	if(dests.size()>0) {
@@ -141,6 +140,21 @@ public class Elevator extends Platform{
 			
 			canvas.floors.forEach(floor -> {
 				if(persons.size() < 4 && elevatorY >= floor.getCeilingY() - 5 && elevatorY <= floor.getCeilingY() + 5) {
+					
+					System.out.println("Elevator at " + floor);
+					System.out.println("Number of dests: " + dests.size());
+					
+					Iterator<DestCall> itDest = extraDests.iterator();
+			    	while(itDest.hasNext()) {
+			    		DestCall call = itDest.next();
+			    		if(!call.getFloor().equals(floor))
+			    			continue;
+			    		System.out.println("Found dest at " +  floor);
+			    		call.getPerson().goToFloor(floor, this);
+			        	itDest.remove();
+			    	}
+					
+					// Checking if any calls are in this floor
 					Iterator<ElevatorCall> it = calls.iterator();
 			    	while(it.hasNext()) {
 			    		ElevatorCall call = it.next();
