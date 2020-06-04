@@ -32,7 +32,7 @@ public class Canvas extends JPanel {
 			try {
 				Thread.sleep(1000);
 				Random random = new Random();
-				for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < 10; i++) {
 					int rand = random.nextInt(floors.size());
 					Person person = new Person(floors.get(rand), this);
 					floors.get(rand).addPerson(person);

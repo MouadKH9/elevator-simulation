@@ -141,10 +141,17 @@ public class Elevator extends Platform{
 			canvas.floors.forEach(floor -> {
 				if(persons.size() < 4 && elevatorY >= floor.getCeilingY() - 5 && elevatorY <= floor.getCeilingY() + 5) {
 					
-					System.out.println("Elevator at " + floor);
-					System.out.println("Number of dests: " + dests.size());
+					Iterator<DestCall> itExtraDest = extraDests.iterator();
+			    	while(itExtraDest.hasNext()) {
+			    		DestCall call = itExtraDest.next();
+			    		if(!call.getFloor().equals(floor))
+			    			continue;
+			    		System.out.println("Found dest at " +  floor);
+			    		call.getPerson().goToFloor(floor, this);
+			    		itExtraDest.remove();
+			    	}
 					
-					Iterator<DestCall> itDest = extraDests.iterator();
+			    	Iterator<DestCall> itDest = dests.iterator();
 			    	while(itDest.hasNext()) {
 			    		DestCall call = itDest.next();
 			    		if(!call.getFloor().equals(floor))
