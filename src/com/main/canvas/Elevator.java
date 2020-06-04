@@ -35,6 +35,7 @@ public class Elevator extends Platform{
 		
 		ActionListener taskPerformer = new ActionListener() {
 		    public void actionPerformed(ActionEvent evt) {
+		    	System.out.println(busy);
 		    	if(busy) return;
 		    	
 		    	if(dests.size()>0) {
@@ -63,10 +64,15 @@ public class Elevator extends Platform{
 			try {
 				busy = true;
 				Floor floor = call.getFloor();
-				moveToY(floor.getCeilingY());
+
+				ArrayList<DestCall> extraDests = moveToY(floor.getCeilingY());
 				currentCalls.remove(call);
+
+				extraDests.forEach(dest -> {
+					dests.add(dest);
+				});
 				
-				int destination = call.getPerson().goToElevator(call.getFloor(),call.getElevator());
+				int destination = call.getPerson().goToElevator(call.getFloor(),call.getElevator(),call.getDirection());
 				goToDestination(destination, call.getPerson());
 				busy=false;
 			} catch (InterruptedException e) {
@@ -86,9 +92,10 @@ public class Elevator extends Platform{
 				busy = true;
 				ArrayList<DestCall> extraDests = moveToY(floor.getCeilingY());
 				person.goToFloor(floor,this);
-				extraDests.forEach(dest->{
-					dropPersonAt(dest.getPerson(), dest.getFloor());
+				extraDests.forEach(dest -> {
+					dests.add(dest);
 				});
+				busy = false;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -130,8 +137,8 @@ public class Elevator extends Platform{
 			    	while(it.hasNext()) {
 			    		ElevatorCall call = it.next();
 			    		if(!call.getFloor().equals(floor) || !direction.equals(call.getDirection())) continue;
-			    		Floor destFloor = canvas.floors.get(call.getPerson().goToElevator(call.getFloor(), this));
-			    		DestCall destCall =new DestCall(call.getPerson(), destFloor, this);
+			    		Floor destFloor = canvas.floors.get(call.getPerson().goToElevator(call.getFloor(), this,call.getDirection()));
+			    		DestCall destCall = new DestCall(call.getPerson(), destFloor, this);
 			        	extraDests.add(destCall);
 			        	it.remove();
 			    	}

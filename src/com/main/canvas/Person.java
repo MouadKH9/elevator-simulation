@@ -40,7 +40,7 @@ public class Person {
 		System.out.println(this + " is calling the elevator, direction: " + direction);
 	}
 	
-	public int goToElevator(Floor floor, Elevator elevator) {
+	public int goToElevator(Floor floor, Elevator elevator,String direction) {
 		this.position = elevator.getNextPosition();
 		floor.takePerson(this);
 		elevator.addPerson(this);
@@ -48,9 +48,13 @@ public class Person {
 		this.canvas.repaint();
 		
 		int randomDest; 
-		do{
-			randomDest = (new Random()).nextInt(canvas.floors.size());
-		}while(randomDest == floor.getNumber());
+		do {
+			if(direction.equals("down"))
+				randomDest = (new Random()).nextInt(floor.getNumber());
+			else
+				randomDest = (new Random()).nextInt(canvas.floors.size() - floor.getNumber() - 2);
+		}
+		while(randomDest == floor.getNumber());
 		System.out.println(this + " wants to go to floor #"+ randomDest);
 		return randomDest;
 	}
@@ -61,6 +65,7 @@ public class Person {
 		elevator.takePerson(this);
 		this.platform = floor;
 		this.canvas.repaint();
+		
 	}
 	
 	public void draw(Graphics2D g2d) {
