@@ -38,6 +38,7 @@ public class MainFrame {
 	 */
 	private void initialize() {
 		frame = new JFrame();
+		frame.setResizable(false);
 		Canvas canvas = new Canvas();
 		frame.getContentPane().add(canvas);
 		

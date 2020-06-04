@@ -1,10 +1,12 @@
 package com.main.canvas;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,6 +17,16 @@ public class Canvas extends JPanel {
 	public ArrayList<Floor> floors = new ArrayList<>();
 	public Elevator elevator;
 	
+	int rectWidth = 300;
+	int rectHeight = 50;
+	
+	public static int WIDTH = 967;
+	public static int HEIGHT = 761;
+	
+	boolean hovered = false;
+	
+	boolean startingScreen = true;
+	
 	public Canvas(){
 		elevator = new Elevator(this);
 		
@@ -23,7 +35,35 @@ public class Canvas extends JPanel {
 		floors.add(new Floor(2,this));
 		floors.add(new Floor(3,this));
 		
-		this.addPersons();
+		// For the button
+		
+		addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseMoved(MouseEvent e){
+				if(!startingScreen) return;
+				
+				if(e.getX() < WIDTH/2 - rectWidth/2 || e.getX() > WIDTH/2 - rectWidth/2 + rectWidth || 
+					e.getY() < HEIGHT/2 - rectHeight/2 || e.getY() > HEIGHT/2 - rectHeight/2 + rectHeight) {
+					hovered = false;
+					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+					repaint();
+					return;
+				}
+				hovered = true;
+				repaint();
+				setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+		});
+		
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(hovered) {
+					startingScreen = false;
+					addPersons();
+				}
+			}
+		});
+		
 	}
 	
 	public void addPersons(){
@@ -67,5 +107,18 @@ public class Canvas extends JPanel {
 		g2d.fillRect(Floor.WIDTH + Elevator.WIDTH / 2 - 5, 0, 3, 1000);
 		
 		elevator.draw(g2d);
+		
+		if(!startingScreen) return;
+		
+		int stringWidth = g2d.getFontMetrics().stringWidth("Commencer");
+		
+		g2d.setColor(new Color(0,0,0,200));
+		g2d.fillRect(0, 0, WIDTH , HEIGHT);
+		
+		g2d.setColor(!hovered ? new Color(39, 174, 96) : new Color(30, 127, 70));
+		g2d.fillRect(WIDTH/2 - rectWidth/2, HEIGHT/2 - rectHeight/2, rectWidth, rectHeight);
+		
+		g2d.setColor(Color.WHITE);
+		g2d.drawString("Commencer", WIDTH/2 - stringWidth/2, HEIGHT/2 + 7);
 	}
 }
