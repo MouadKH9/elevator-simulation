@@ -19,6 +19,9 @@ public class Person {
 	private Platform platform;
 	private Canvas canvas;
 	
+	private boolean done = false;
+	private int doneX = 0;
+	
 	public Person(Platform platform,Canvas canvas) {
 		this.canvas = canvas;
 		this.platform = platform;
@@ -66,10 +69,19 @@ public class Person {
 		this.platform = floor;
 		this.canvas.repaint();
 		
+		Thread thread = new Thread(()->{
+			try {
+				Thread.sleep(1000);
+				this.disappear();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		});
+		thread.start();
 	}
 	
 	public void draw(Graphics2D g2d) {
-		int startX = platform.getStartX() - (position + 1) * (WIDTH + 20);
+		int startX = !done ? platform.getStartX() - (position + 1) * (WIDTH + 20) : doneX;
 		
 		try {
 			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/person.png")),
@@ -88,6 +100,19 @@ public class Person {
 	@Override
 	public String toString() {
 		return "Person [ID=" + ID + "]";
+	}
+	
+	public void disappear() throws InterruptedException {
+		doneX = platform.getStartX() - (position + 1) * (WIDTH + 20);
+		done = true;
+		while(doneX > 20) {
+			Thread.sleep(25);
+			doneX -= 5;
+			canvas.repaint();
+		}
+		
+		platform.takePerson(this);
+		canvas.repaint();
 	}
 	
 	

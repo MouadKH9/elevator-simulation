@@ -11,4 +11,8 @@ public abstract class Platform {
 	
 	public abstract int getNextPosition();
 	
+	public abstract void addPerson(Person person);
+
+	public abstract void takePerson(Person person);
+	
 }

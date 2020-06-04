@@ -26,7 +26,7 @@ public class Elevator extends Platform{
 	private ArrayList<ElevatorCall> calls = new ArrayList<ElevatorCall>();
 	private ArrayList<ElevatorCall> currentCalls = new ArrayList<ElevatorCall>();
 
-	private Queue<DestCall> dests = new LinkedList<DestCall>();
+	private ArrayList<DestCall> dests = new ArrayList<DestCall>();
 	
 	private boolean busy = false;
 	
@@ -39,10 +39,18 @@ public class Elevator extends Platform{
 		    	if(busy) return;
 		    	
 		    	if(dests.size()>0) {
-		    		System.out.println(dests.size());
-		    		DestCall dest = dests.poll();
+		    		dests.sort((c1,c2) -> {
+		    			return elevatorY - c1.getFloor().getCeilingY() > elevatorY - c2.getFloor().getCeilingY() ? 1 : -1;
+		    		});
+		    		DestCall dest = dests.get(0);
 		    		dropPersonAt(dest.getPerson(), dest.getFloor());
+		    		dests.remove(0);
 		    	}else{
+		    		
+		    		calls.sort((c1,c2) -> {
+		    			return elevatorY - c1.getFloor().getCeilingY() > elevatorY - c2.getFloor().getCeilingY() ? 1 : -1;
+		    		});
+		    		
 		    		Iterator<ElevatorCall> it = calls.iterator();
 			    	while(it.hasNext()) {
 			    		ElevatorCall call = it.next();
@@ -138,7 +146,7 @@ public class Elevator extends Platform{
 			    		ElevatorCall call = it.next();
 			    		if(!call.getFloor().equals(floor) || !direction.equals(call.getDirection()))
 			    			continue;
-			    		if(persons.size() >= 4 ) break;
+			    		if(persons.size() >= 4) break;
 			    		Floor destFloor = canvas.floors.get(call.getPerson().goToElevator(call.getFloor(), this,call.getDirection()));
 			    		DestCall destCall = new DestCall(call.getPerson(), destFloor, this);
 			        	extraDests.add(destCall);
