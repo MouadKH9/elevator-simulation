@@ -132,11 +132,13 @@ public class Elevator extends Platform{
 			canvas.repaint();
 			
 			canvas.floors.forEach(floor -> {
-				if(elevatorY >= floor.getCeilingY() - 5 && elevatorY <= floor.getCeilingY() + 5) {
+				if(persons.size() < 4 && elevatorY >= floor.getCeilingY() - 5 && elevatorY <= floor.getCeilingY() + 5) {
 					Iterator<ElevatorCall> it = calls.iterator();
 			    	while(it.hasNext()) {
 			    		ElevatorCall call = it.next();
-			    		if(!call.getFloor().equals(floor) || !direction.equals(call.getDirection())) continue;
+			    		if(!call.getFloor().equals(floor) || !direction.equals(call.getDirection()))
+			    			continue;
+			    		if(persons.size() >= 4 ) break;
 			    		Floor destFloor = canvas.floors.get(call.getPerson().goToElevator(call.getFloor(), this,call.getDirection()));
 			    		DestCall destCall = new DestCall(call.getPerson(), destFloor, this);
 			        	extraDests.add(destCall);
