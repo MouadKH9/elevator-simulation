@@ -139,7 +139,9 @@ public class Elevator extends Platform{
 			canvas.repaint();
 			
 			canvas.floors.forEach(floor -> {
-				if(persons.size() < 4 && elevatorY >= floor.getCeilingY() - 5 && elevatorY <= floor.getCeilingY() + 5) {
+				if(persons.size() < 4 && elevatorY >= floor.getCeilingY() - 10 && elevatorY <= floor.getCeilingY() + 10) {
+					
+					System.out.println("Elevator  at " + floor.getNumber());
 					
 					Iterator<DestCall> itExtraDest = extraDests.iterator();
 			    	while(itExtraDest.hasNext()) {
