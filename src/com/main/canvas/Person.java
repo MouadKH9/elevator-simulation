@@ -22,11 +22,14 @@ public class Person {
 	private boolean done = false;
 	private float scale = 1;
 	
+	private boolean woman;
+	
 	public Person(Platform platform,Canvas canvas) {
 		this.canvas = canvas;
 		this.platform = platform;
 		this.position = platform.getNextPosition();
 		this.ID = ++Person.numberOfPersons;
+		this.woman = (new Random()).nextBoolean();
 	}
 
 	public int getPosition() {
@@ -93,7 +96,7 @@ public class Person {
 		int startX = platform.getStartX() - (position + 1) * (WIDTH + 10);
 		
 		try {
-			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/person.png")),
+			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/" + (woman ? "woman": "man") + ".png")),
 					startX, platform.getFloorY() - HEIGHT,(int)( scale * WIDTH),(int)(scale * HEIGHT), canvas);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -101,7 +104,7 @@ public class Person {
 		g2d.setColor(Color.BLACK);
 		int stringWidth = g2d.getFontMetrics().stringWidth(""+ID);
 		if(!done) {
-			g2d.setFont(new Font("Arial",Font.PLAIN,18));
+			g2d.setFont(new Font("Arial",Font.PLAIN,16));
 			g2d.drawString(""+ID, startX + WIDTH/2 - stringWidth/2, platform.getFloorY()-HEIGHT/2-2);
 		}
 		

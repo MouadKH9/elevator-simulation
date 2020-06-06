@@ -141,9 +141,13 @@ public class Canvas extends JPanel {
 		int startY = floors.get(floors.size() - 1).getCeilingY();
 		
 		g2d.setColor(Color.GRAY);
-		g2d.fillRect(Floor.WIDTH, startY, Elevator.WIDTH, 1000);
+		g2d.fillRect(Floor.WIDTH, startY, Elevator.WIDTH, HEIGHT);
+		g2d.fillRect(0, startY, Elevator.WIDTH, HEIGHT);
+		
+		
 		g2d.setColor(Color.WHITE);
-		g2d.fillRect(Floor.WIDTH + Elevator.WIDTH / 2 - 5, startY, 3, 1000);
+		g2d.fillRect(Floor.WIDTH + Elevator.WIDTH / 2 - 5, startY, 3, HEIGHT);
+		g2d.fillRect(Elevator.WIDTH / 2 - 5, startY, 3, HEIGHT);
 	}
 	
 	public void drawStatus(Graphics2D g2d) {
