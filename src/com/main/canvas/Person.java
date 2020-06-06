@@ -20,7 +20,7 @@ public class Person {
 	private Canvas canvas;
 	
 	private boolean done = false;
-	private int doneX = 0;
+	private float scale = 1;
 	
 	public Person(Platform platform,Canvas canvas) {
 		this.canvas = canvas;
@@ -90,19 +90,20 @@ public class Person {
 	}
 	
 	public void draw(Graphics2D g2d) {
-		int startX = !done ? platform.getStartX() - (position + 1) * (WIDTH + 10) : doneX;
+		int startX = platform.getStartX() - (position + 1) * (WIDTH + 10);
 		
 		try {
 			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/person.png")),
-					startX, platform.getFloorY() - HEIGHT, WIDTH, HEIGHT, canvas);
-			
+					startX, platform.getFloorY() - HEIGHT,(int)( scale * WIDTH),(int)(scale * HEIGHT), canvas);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		g2d.setColor(Color.BLACK);
 		int stringWidth = g2d.getFontMetrics().stringWidth(""+ID);
-		g2d.setFont(new Font("Arial",Font.PLAIN,18));
-		g2d.drawString(""+ID, startX + WIDTH/2 - stringWidth/2, platform.getFloorY()-HEIGHT/2-2);
+		if(!done) {
+			g2d.setFont(new Font("Arial",Font.PLAIN,18));
+			g2d.drawString(""+ID, startX + WIDTH/2 - stringWidth/2, platform.getFloorY()-HEIGHT/2-2);
+		}
 		
 	}
 
@@ -112,14 +113,14 @@ public class Person {
 	}
 	
 	public void disappear() throws InterruptedException {
-		doneX = platform.getStartX() - (position + 1) * (WIDTH + 20);
 		done = true;
 		Thread.sleep(1000);
-		while(doneX > 20) {
+		while(scale > 0.1) {
 			Thread.sleep(25);
-			doneX -= 5;
+			scale -= 0.01;
 			canvas.repaint();
 		}
+		System.out.println("Out of loop");
 		
 		platform.takePerson(this);
 		canvas.repaint();

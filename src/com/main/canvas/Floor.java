@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 public class Floor extends Platform{
 	
 	public static int HEIGHT = 150;
-	public static int WIDTH = 760;
+	public static int WIDTH = 500;
 	
 	private int number;
 	private Canvas canvas;
@@ -63,7 +63,7 @@ public class Floor extends Platform{
 	
 	public void draw(Graphics2D g2d) {
 		int ceilingY = canvas.getBounds().height - (number + 1) * HEIGHT;
-		int startX = 0;
+		int startX = Elevator.WIDTH;
 
 		g2d.setColor(new Color(0, 45, 119));
 		g2d.fillRect(startX, ceilingY , WIDTH, HEIGHT);
@@ -76,7 +76,7 @@ public class Floor extends Platform{
 		
 		g2d.setFont(new Font("Arial",Font.PLAIN,23));
 		g2d.setColor(Color.WHITE);
-		g2d.drawString("Etage " + number, 5, ceilingY + 25);
+		g2d.drawString("Etage " + number, startX + 10, ceilingY + 25);
 
 		// to avoid ConcurrentModification
 		ArrayList<Person> tempP = new ArrayList<Person>(persons);
