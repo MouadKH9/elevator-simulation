@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
 
 public class Person {
 	
-	public static int HEIGHT = 80;
-	public static int WIDTH = 40;
+	public static int HEIGHT = 70;
+	public static int WIDTH = 30;
 	public static int numberOfPersons = 0;
 	
 	private int ID;
@@ -81,7 +81,7 @@ public class Person {
 	}
 	
 	public void draw(Graphics2D g2d) {
-		int startX = !done ? platform.getStartX() - (position + 1) * (WIDTH + 20) : doneX;
+		int startX = !done ? platform.getStartX() - (position + 1) * (WIDTH + 10) : doneX;
 		
 		try {
 			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/person.png")),
@@ -90,7 +90,7 @@ public class Person {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		g2d.setColor(Color.WHITE);
+		g2d.setColor(Color.BLACK);
 		int stringWidth = g2d.getFontMetrics().stringWidth(""+ID);
 		g2d.setFont(new Font("Arial",Font.PLAIN,18));
 		g2d.drawString(""+ID, startX + WIDTH/2 - stringWidth/2, platform.getFloorY()-HEIGHT/2-2);

@@ -21,7 +21,7 @@ public class Canvas extends JPanel {
 	int rectHeight = 50;
 	
 	public static int WIDTH = 967;
-	public static int HEIGHT = 761;
+	public static int HEIGHT = 900;
 	
 	boolean hovered = false;
 	
@@ -34,6 +34,7 @@ public class Canvas extends JPanel {
 		floors.add(new Floor(1,this));
 		floors.add(new Floor(2,this));
 		floors.add(new Floor(3,this));
+		floors.add(new Floor(4,this));
 		
 		// For the button
 		
@@ -96,20 +97,25 @@ public class Canvas extends JPanel {
 		g2d.setColor(new Color(25,163,255));
 		g2d.fillRect(0, 0, 1000, 1000);
 
-		g2d.setColor(new Color(255,204,0));
-		g2d.fillOval(40, 20, 40, 40);
 		
 		floors.forEach(f->f.draw(g2d));
 
+		int startY = floors.get(floors.size() - 1).getCeilingY();
+		
 		g2d.setColor(Color.GRAY);
-		g2d.fillRect(Floor.WIDTH, 0, Elevator.WIDTH, 1000);
+		g2d.fillRect(Floor.WIDTH, startY, Elevator.WIDTH, 1000);
 		g2d.setColor(Color.WHITE);
-		g2d.fillRect(Floor.WIDTH + Elevator.WIDTH / 2 - 5, 0, 3, 1000);
+		g2d.fillRect(Floor.WIDTH + Elevator.WIDTH / 2 - 5, startY, 3, 1000);
 		
 		elevator.draw(g2d);
 		
 		if(!startingScreen) return;
 		
+		this.drawMenu(g2d);
+		
+	}
+	
+	public void drawMenu(Graphics2D g2d){
 		int stringWidth = g2d.getFontMetrics().stringWidth("Commencer");
 		
 		g2d.setColor(new Color(0,0,0,200));

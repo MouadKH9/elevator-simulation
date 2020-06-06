@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 public class Floor extends Platform{
 	
 	public static int HEIGHT = 150;
-	public static int WIDTH = 700;
+	public static int WIDTH = 760;
 	
 	private int number;
 	private Canvas canvas;

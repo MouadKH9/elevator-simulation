@@ -16,7 +16,7 @@ import javax.swing.Timer;
 public class Elevator extends Platform{
 	
 	public static int HEIGHT = 150;
-	public static int WIDTH = 250;
+	public static int WIDTH = 200;
 	
 	private Canvas canvas;
 	private ArrayList<Person> persons = new ArrayList<Person>();
@@ -29,6 +29,8 @@ public class Elevator extends Platform{
 	private ArrayList<DestCall> dests = new ArrayList<DestCall>();
 	
 	private boolean busy = false;
+	
+	private int currentFloor = 0;
 	
 	public Elevator(Canvas canvas) {
 		this.canvas = canvas;
@@ -141,14 +143,13 @@ public class Elevator extends Platform{
 			canvas.floors.forEach(floor -> {
 				if(persons.size() < 4 && elevatorY >= floor.getCeilingY() - 10 && elevatorY <= floor.getCeilingY() + 10) {
 					
-					System.out.println("Elevator  at " + floor.getNumber());
+					this.currentFloor = floor.getNumber();
 					
 					Iterator<DestCall> itExtraDest = extraDests.iterator();
 			    	while(itExtraDest.hasNext()) {
 			    		DestCall call = itExtraDest.next();
 			    		if(!call.getFloor().equals(floor))
 			    			continue;
-			    		System.out.println("Found dest at " +  floor);
 			    		call.getPerson().goToFloor(floor, this);
 			    		itExtraDest.remove();
 			    	}
@@ -158,7 +159,6 @@ public class Elevator extends Platform{
 			    		DestCall call = itDest.next();
 			    		if(!call.getFloor().equals(floor))
 			    			continue;
-			    		System.out.println("Found dest at " +  floor);
 			    		call.getPerson().goToFloor(floor, this);
 			        	itDest.remove();
 			    	}
@@ -228,7 +228,13 @@ public class Elevator extends Platform{
 	public String toString() {
 		return "Elevator [number of persons: " + persons.size() + "]";
 	}
-	
-	
+
+	public int getCurrentFloor() {
+		return currentFloor;
+	}
+
+	public void setCurrentFloor(int currentFloor) {
+		this.currentFloor = currentFloor;
+	}
 
 }
