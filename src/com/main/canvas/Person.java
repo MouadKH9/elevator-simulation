@@ -48,6 +48,11 @@ public class Person {
 		floor.takePerson(this);
 		elevator.addPerson(this);
 		this.platform = elevator;
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		this.canvas.repaint();
 		
 		int randomDest; 
@@ -63,6 +68,11 @@ public class Person {
 	}
 	
 	public void goToFloor(Floor floor, Elevator elevator) {
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		this.position = floor.getNextPosition();
 		floor.addPerson(this);
 		elevator.takePerson(this);
@@ -71,7 +81,6 @@ public class Person {
 		
 		Thread thread = new Thread(()->{
 			try {
-				Thread.sleep(1000);
 				this.disappear();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -105,6 +114,7 @@ public class Person {
 	public void disappear() throws InterruptedException {
 		doneX = platform.getStartX() - (position + 1) * (WIDTH + 20);
 		done = true;
+		Thread.sleep(1000);
 		while(doneX > 20) {
 			Thread.sleep(25);
 			doneX -= 5;
@@ -118,6 +128,15 @@ public class Person {
 		if(numberOfPersons < 2)
 			canvas.addPersons();
 	}
+
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+	
 	
 	
 }

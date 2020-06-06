@@ -2,6 +2,7 @@ package com.main.canvas;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
@@ -40,12 +41,13 @@ public class Canvas extends JPanel {
 		
 		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseMoved(MouseEvent e){
+
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 				if(!startingScreen) return;
 				
 				if(e.getX() < WIDTH/2 - rectWidth/2 || e.getX() > WIDTH/2 - rectWidth/2 + rectWidth || 
 					e.getY() < HEIGHT/2 - rectHeight/2 || e.getY() > HEIGHT/2 - rectHeight/2 + rectHeight) {
 					hovered = false;
-					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 					repaint();
 					return;
 				}
@@ -65,6 +67,17 @@ public class Canvas extends JPanel {
 			}
 		});
 		
+	}
+	
+	public int getWaitingNumber() {
+		int number = 0;
+		for (Floor floor : floors) {
+			for (Person person : floor.getPersons()) {
+				if(!person.isDone())
+					number++;
+			}
+		}
+		return number;
 	}
 	
 	public void addPersons(){
@@ -100,17 +113,13 @@ public class Canvas extends JPanel {
 		
 		floors.forEach(f->f.draw(g2d));
 
-		int startY = floors.get(floors.size() - 1).getCeilingY();
-		
-		g2d.setColor(Color.GRAY);
-		g2d.fillRect(Floor.WIDTH, startY, Elevator.WIDTH, 1000);
-		g2d.setColor(Color.WHITE);
-		g2d.fillRect(Floor.WIDTH + Elevator.WIDTH / 2 - 5, startY, 3, 1000);
-		
+		this.drawElevatorTrack(g2d);
 		elevator.draw(g2d);
 		
-		if(!startingScreen) return;
-		
+		if(!startingScreen) {
+			this.drawStatus(g2d);
+			return;
+		}
 		this.drawMenu(g2d);
 		
 	}
@@ -126,5 +135,32 @@ public class Canvas extends JPanel {
 		
 		g2d.setColor(Color.WHITE);
 		g2d.drawString("Commencer", WIDTH/2 - stringWidth/2, HEIGHT/2 + 7);
+	}
+	
+	public void drawElevatorTrack(Graphics2D g2d) {
+		int startY = floors.get(floors.size() - 1).getCeilingY();
+		
+		g2d.setColor(Color.GRAY);
+		g2d.fillRect(Floor.WIDTH, startY, Elevator.WIDTH, 1000);
+		g2d.setColor(Color.WHITE);
+		g2d.fillRect(Floor.WIDTH + Elevator.WIDTH / 2 - 5, startY, 3, 1000);
+	}
+	
+	public void drawStatus(Graphics2D g2d) {
+		
+
+		g2d.setFont(new Font("Arial",Font.PLAIN,30));
+		g2d.setColor(Color.white);
+		
+		String title = "Simulation d'ascenseur";
+		int titleWidth = g2d.getFontMetrics().stringWidth(title);
+		g2d.drawString(title, WIDTH/2 - titleWidth/2, 32);
+		
+
+		g2d.setFont(new Font("Arial",Font.PLAIN,22));
+		g2d.drawString("Personnes en attente: " + getWaitingNumber(),10,56);
+		g2d.drawString("Personnes dans l'ascenseur: " + elevator.getPersonsCount(),10,78);
+		g2d.drawString("Ascenseur au étage #" + elevator.getCurrentFloor(),10,100);
+		
 	}
 }

@@ -103,8 +103,11 @@ public class Floor extends Platform{
 		if(!(obj instanceof Floor)) return false;
 		return ((Floor) obj).getNumber() == number;
 	}
-	
-	
+
+
+	public ArrayList<Person> getPersons() {
+		return persons;
+	}
 	
 	
 }

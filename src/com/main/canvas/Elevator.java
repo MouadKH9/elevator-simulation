@@ -18,6 +18,8 @@ public class Elevator extends Platform{
 	public static int HEIGHT = 150;
 	public static int WIDTH = 200;
 	
+	public static int MAX_PERSONS = 4;
+	
 	private Canvas canvas;
 	private ArrayList<Person> persons = new ArrayList<Person>();
 	private int elevatorY = -1;
@@ -141,7 +143,7 @@ public class Elevator extends Platform{
 			canvas.repaint();
 			
 			canvas.floors.forEach(floor -> {
-				if(persons.size() < 4 && elevatorY >= floor.getCeilingY() - 10 && elevatorY <= floor.getCeilingY() + 10) {
+				if(persons.size() < MAX_PERSONS && elevatorY >= floor.getCeilingY() - 20 && elevatorY <= floor.getCeilingY() + 20) {
 					
 					this.currentFloor = floor.getNumber();
 					
@@ -235,6 +237,10 @@ public class Elevator extends Platform{
 
 	public void setCurrentFloor(int currentFloor) {
 		this.currentFloor = currentFloor;
+	}
+	
+	public int getPersonsCount() {
+		return this.persons.size();
 	}
 
 }
