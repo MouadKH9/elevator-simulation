@@ -41,7 +41,7 @@ public class MainFrame {
 		frame.setResizable(false);
 		Canvas canvas = new Canvas();
 		frame.getContentPane().add(canvas);
-		frame.setBounds(100, 100, 967, 900);
+		frame.setBounds(100, 100, 750, 820);
 		frame.setTitle("Simulation d'ascenseur");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

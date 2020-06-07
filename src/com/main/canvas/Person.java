@@ -41,9 +41,9 @@ public class Person {
 	}
 	
 	public void callElevator(String direction) {
-		ElevatorCall call = new ElevatorCall(direction,this,(Floor) platform,canvas.elevator);
-		canvas.elevator.callMade(call);
-		System.out.println(this + " is calling the elevator, direction: " + direction);
+		ElevatorCall call = new ElevatorCall(direction,this,(Floor) platform);
+		canvas.controller.callMade(call);
+		System.out.println(this + " , direction: " + direction);
 	}
 	
 	public int goToElevator(Floor floor, Elevator elevator,String direction) {
@@ -66,7 +66,7 @@ public class Person {
 				randomDest = (new Random()).nextInt(canvas.floors.size() - floor.getNumber() - 2);
 		}
 		while(randomDest == floor.getNumber());
-		System.out.println(this + " wants to go to floor #"+ randomDest);
+		System.out.println(this + " => "+ randomDest + " @ E" + elevator.getNumber());
 		return randomDest;
 	}
 	
@@ -112,25 +112,27 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return "Person [ID=" + ID + "]";
+		return "P#" + ID;
 	}
 	
 	public void disappear() throws InterruptedException {
 		done = true;
-		Thread.sleep(1000);
-		while(scale > 0.1) {
+		
+		Thread.sleep(600);
+		while(scale > 0.3) {
 			Thread.sleep(25);
 			scale -= 0.01;
 			canvas.repaint();
 		}
-		System.out.println("Out of loop");
-		
+
 		platform.takePerson(this);
 		canvas.repaint();
 		
 		numberOfPersons--;
 		if(numberOfPersons < 2)
 			canvas.addPersons();
+		
+		
 	}
 
 	public boolean isDone() {

@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
 
 public class Floor extends Platform{
 	
-	public static int HEIGHT = 150;
-	public static int WIDTH = 500;
+	public static int HEIGHT = 130;
+	public static int WIDTH = 550;
 	
 	private int number;
 	private Canvas canvas;
@@ -85,7 +85,7 @@ public class Floor extends Platform{
 
 	@Override
 	public String toString() {
-		return "Floor [number=" + number + "]";
+		return "F#" + number;
 	}
 
 

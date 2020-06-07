@@ -15,14 +15,14 @@ import javax.swing.Timer;
 
 public class Elevator extends Platform{
 	
-	public static int HEIGHT = 150;
+	public static int HEIGHT = 130;
 	public static int WIDTH = 200;
 	
 	public static int MAX_PERSONS = 4;
 	
 	private Canvas canvas;
 	private ArrayList<Person> persons = new ArrayList<Person>();
-	private int elevatorY = -1;
+	int elevatorY = -1;
 	
 	
 	private ArrayList<ElevatorCall> calls = new ArrayList<ElevatorCall>();
@@ -31,46 +31,17 @@ public class Elevator extends Platform{
 	private ArrayList<DestCall> dests = new ArrayList<DestCall>();
 	
 	private boolean busy = false;
+	private boolean second;
 	
 	private int currentFloor = 0;
 	
-	public Elevator(Canvas canvas) {
+	public Elevator(Canvas canvas,boolean second) {
 		this.canvas = canvas;
-		
-		ActionListener taskPerformer = new ActionListener() {
-		    public void actionPerformed(ActionEvent evt) {
-		    	if(busy) return;
-		    	
-		    	if(dests.size()>0) {
-		    		dests.sort((c1,c2) -> {
-		    			return elevatorY - c1.getFloor().getCeilingY() > elevatorY - c2.getFloor().getCeilingY() ? 1 : -1;
-		    		});
-		    		DestCall dest = dests.get(0);
-		    		dropPersonAt(dest.getPerson(), dest.getFloor());
-		    		dests.remove(0);
-		    	}else{
-		    		
-		    		calls.sort((c1,c2) -> {
-		    			return elevatorY - c1.getFloor().getCeilingY() > elevatorY - c2.getFloor().getCeilingY() ? 1 : -1;
-		    		});
-		    		
-		    		Iterator<ElevatorCall> it = calls.iterator();
-			    	while(it.hasNext()) {
-			    		ElevatorCall call = it.next();
-			        	currentCalls.add(call);
-			        	goToFloor(call);
-			        	it.remove();
-			        	break;
-			    	}
-		    	}
-		    	
-		    }
-		};
-		Timer timer = new Timer(1000 ,taskPerformer);
-		timer.start();
+		this.second = second;
 	}
 	
 	public void goToFloor(ElevatorCall call) {
+		if(persons.size() == MAX_PERSONS) return;
 		Thread thread = new Thread(() -> {
 			try {
 				busy = true;
@@ -121,7 +92,7 @@ public class Elevator extends Platform{
 		g2d.setColor(Color.BLACK);
 		try {
 			g2d.drawImage(ImageIO.read(getClass().getResource("/com/main/assets/elevator.png")),
-					Floor.WIDTH, elevatorY , WIDTH, HEIGHT, canvas);
+					second ? 0 : Floor.WIDTH, elevatorY , WIDTH, HEIGHT, canvas);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -166,27 +137,22 @@ public class Elevator extends Platform{
 			    	}
 					
 					// Checking if any calls are in this floor
-					Iterator<ElevatorCall> it = calls.iterator();
+					Iterator<ElevatorCall> it = canvas.controller.getAllCalls().iterator();
 			    	while(it.hasNext()) {
 			    		ElevatorCall call = it.next();
 			    		if(!call.getFloor().equals(floor) || !direction.equals(call.getDirection()))
 			    			continue;
-			    		if(persons.size() >= 4) break;
+			    		if(persons.size() == MAX_PERSONS) break;
 			    		Floor destFloor = canvas.floors.get(call.getPerson().goToElevator(call.getFloor(), this,call.getDirection()));
 			    		DestCall destCall = new DestCall(call.getPerson(), destFloor, this);
 			        	extraDests.add(destCall);
-			        	it.remove();
+			        	call.getElevator().getCalls().remove(call);
 			    	}
 				}
 			});
 		}
 		this.elevatorY = Y;
 		return extraDests;
-	}
-	
-	
-	public void callMade(ElevatorCall call) {
-		calls.add(call);
 	}
 	
 	public void addPerson(Person person) {
@@ -214,7 +180,7 @@ public class Elevator extends Platform{
 	
 	@Override
 	public int getStartX() {
-		return Floor.WIDTH + WIDTH;
+		return second ? WIDTH :Floor.WIDTH + WIDTH;
 	}
 	
 
@@ -228,7 +194,7 @@ public class Elevator extends Platform{
 
 	@Override
 	public String toString() {
-		return "Elevator [number of persons: " + persons.size() + "]";
+		return "E#" + getNumber();
 	}
 
 	public int getCurrentFloor() {
@@ -241,6 +207,74 @@ public class Elevator extends Platform{
 	
 	public int getPersonsCount() {
 		return this.persons.size();
+	}
+
+	public ArrayList<Person> getPersons() {
+		return persons;
+	}
+
+	public void setPersons(ArrayList<Person> persons) {
+		this.persons = persons;
+	}
+
+	public int getElevatorY() {
+		return elevatorY;
+	}
+
+	public void setElevatorY(int elevatorY) {
+		this.elevatorY = elevatorY;
+	}
+
+	public ArrayList<ElevatorCall> getCalls() {
+		return calls;
+	}
+
+	public void setCalls(ArrayList<ElevatorCall> calls) {
+		this.calls = calls;
+	}
+
+	public ArrayList<ElevatorCall> getCurrentCalls() {
+		return currentCalls;
+	}
+
+	public void setCurrentCalls(ArrayList<ElevatorCall> currentCalls) {
+		this.currentCalls = currentCalls;
+	}
+
+	public ArrayList<DestCall> getDests() {
+		return dests;
+	}
+
+	public void setDests(ArrayList<DestCall> dests) {
+		this.dests = dests;
+	}
+
+	public boolean isBusy() {
+		return busy;
+	}
+	
+	public boolean isBusyAndFree() {
+		return busy || calls.size() > 0;
+	}
+
+	public void setBusy(boolean busy) {
+		this.busy = busy;
+	}
+	
+	public int getNumber() {
+		return this.second ? 2 : 1;
+	}
+	
+	public String getCallsAsString() {
+		StringBuilder sb = new StringBuilder("");
+		calls.forEach(call->sb.append(call.getPerson() + " "));
+		return sb.toString();
+	}
+	
+	public String getDestsAsString() {
+		StringBuilder sb = new StringBuilder("");
+		calls.forEach(call->sb.append(call.getFloor() + " "));
+		return sb.toString();
 	}
 
 }

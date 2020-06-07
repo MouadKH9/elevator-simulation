@@ -8,11 +8,10 @@ public class ElevatorCall {
 	
 	
 	
-	public ElevatorCall(String direction,Person person,Floor floor,Elevator elevator) {
+	public ElevatorCall(String direction,Person person,Floor floor) {
 		this.direction = direction;
 		this.person = person;
 		this.floor = floor;
-		this.elevator = elevator;
 	}
 	
 	public String getDirection() {
@@ -40,6 +39,11 @@ public class ElevatorCall {
 
 	public void setFloor(Floor floor) {
 		this.floor = floor;
+	}
+
+	@Override
+	public String toString() {
+		return "Call: "  + person + " => " + floor + " @ " + elevator;
 	}
 	
 	

@@ -16,20 +16,26 @@ import javax.swing.JPanel;
 public class Canvas extends JPanel {
 	
 	public ArrayList<Floor> floors = new ArrayList<>();
-	public Elevator elevator;
+	public Elevator elevator1;
+	public Elevator elevator2;
 	
 	int rectWidth = 300;
 	int rectHeight = 50;
 	
-	public static int WIDTH = 967;
-	public static int HEIGHT = 900;
+	public static int WIDTH = 750;
+	public static int HEIGHT = 820;
 	
 	boolean hovered = false;
 	
 	boolean startingScreen = true;
 	
+	public Controller controller;
+	
 	public Canvas(){
-		elevator = new Elevator(this);
+		elevator1 = new Elevator(this,false);
+		elevator2 = new Elevator(this,true);
+		
+		controller = new Controller(elevator1, elevator2);
 		
 		floors.add(new Floor(0,this));
 		floors.add(new Floor(1,this));
@@ -86,7 +92,7 @@ public class Canvas extends JPanel {
 			try {
 				Thread.sleep(1000);
 				Random random = new Random();
-				for (int i = 0; i < 5; i++) {
+				for (int i = 0; i < 3; i++) {
 					int rand = random.nextInt(floors.size());
 					Person person = new Person(floors.get(rand), this);
 					floors.get(rand).addPerson(person);
@@ -108,13 +114,14 @@ public class Canvas extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 		
 		g2d.setColor(new Color(25,163,255));
-		g2d.fillRect(0, 0, 1000, 1000);
+		g2d.fillRect(0, 0, WIDTH, HEIGHT);
 
 		
 		floors.forEach(f->f.draw(g2d));
 
 		this.drawElevatorTrack(g2d);
-		elevator.draw(g2d);
+		elevator1.draw(g2d);
+		elevator2.draw(g2d);
 		
 		if(!startingScreen) {
 			this.drawStatus(g2d);
@@ -162,9 +169,10 @@ public class Canvas extends JPanel {
 		
 
 		g2d.setFont(new Font("Arial",Font.PLAIN,22));
-		g2d.drawString("Personnes en attente: " + getWaitingNumber(),10,56);
-		g2d.drawString("Personnes dans l'ascenseur: " + elevator.getPersonsCount(),10,78);
-		g2d.drawString("Ascenseur au étage #" + elevator.getCurrentFloor(),10,100);
+		g2d.drawString("Personnes en attente: " + getWaitingNumber(),10,62);
+		g2d.drawString("Personnes dans l'ascenseur: " + (elevator1.getPersonsCount() + elevator1.getPersonsCount()),10,84);
+		g2d.drawString("Ascenseur gauche au étage #" + elevator2.getCurrentFloor(),10,106);
+		g2d.drawString("Ascenseur droit au étage #" + elevator1.getCurrentFloor(),10,128);
 		
 	}
 }
