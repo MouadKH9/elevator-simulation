@@ -122,12 +122,11 @@ public class Canvas extends JPanel {
 		this.drawElevatorTrack(g2d);
 		elevator1.draw(g2d);
 		elevator2.draw(g2d);
+
+		this.drawStatus(g2d);
 		
-		if(!startingScreen) {
-			this.drawStatus(g2d);
-			return;
-		}
-		this.drawMenu(g2d);
+		if(startingScreen)
+			this.drawMenu(g2d);
 		
 	}
 	

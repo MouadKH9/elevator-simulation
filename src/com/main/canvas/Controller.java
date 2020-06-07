@@ -19,7 +19,6 @@ public class Controller {
 		    public void actionPerformed(ActionEvent evt) {
 				checkElevator(e1);
 	    		checkElevator(e2);
-		    	
 		    }
 		};
 		Timer timer = new Timer(1000 ,taskPerformer);
@@ -29,11 +28,10 @@ public class Controller {
 	public void checkElevator(Elevator elevator) {
 		if(elevator.isBusy()) return;
 		
-		if(elevator.getDests().size()>0) {
+		if(elevator.getDests().size()>0)
     		checkElevatorDests(elevator);
-    	}else{
+    	else
     		checkElevatorCalls(elevator);
-    	}
 	}
 	
 	public void checkElevatorDests(Elevator elevator) {
