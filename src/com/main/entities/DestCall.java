@@ -1,34 +1,28 @@
-package com.main.canvas;
+package com.main.entities;
 
-public class ElevatorCall {
-	private String direction;
+public class DestCall {
 	private Floor floor;
 	private Person person;
 	private Elevator elevator;
-	
-	
-	
-	public ElevatorCall(String direction,Person person,Floor floor) {
-		this.direction = direction;
+
+	public DestCall(Person person, Floor floor, Elevator elevator) {
 		this.person = person;
 		this.floor = floor;
+		this.elevator = elevator;
 	}
-	
-	public String getDirection() {
-		return direction;
-	}
-	public void setDirection(String direction) {
-		this.direction = direction;
-	}
+
 	public Person getPerson() {
 		return person;
 	}
+
 	public void setPerson(Person person) {
 		this.person = person;
 	}
+
 	public Elevator getElevator() {
 		return elevator;
 	}
+
 	public void setElevator(Elevator elevator) {
 		this.elevator = elevator;
 	}
@@ -41,11 +35,4 @@ public class ElevatorCall {
 		this.floor = floor;
 	}
 
-	@Override
-	public String toString() {
-		return "Call: "  + person + " => " + floor + " @ " + elevator;
-	}
-	
-	
-	
 }

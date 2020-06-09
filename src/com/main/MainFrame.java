@@ -4,8 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
-import com.main.canvas.Canvas;
-
 public class MainFrame {
 
 	private JFrame frame;
