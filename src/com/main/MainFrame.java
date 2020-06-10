@@ -4,8 +4,6 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
-import com.main.canvas.Canvas;
-
 public class MainFrame {
 
 	private JFrame frame;
@@ -41,7 +39,7 @@ public class MainFrame {
 		frame.setResizable(false);
 		Canvas canvas = new Canvas();
 		frame.getContentPane().add(canvas);
-		frame.setBounds(100, 100, 967, 900);
+		frame.setBounds(100, 100, Canvas.WIDTH, Canvas.HEIGHT);
 		frame.setTitle("Simulation d'ascenseur");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
