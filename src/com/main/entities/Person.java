@@ -114,7 +114,7 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return "P#" + ID;
+		return "P" + ID;
 	}
 
 	public void disappear() throws InterruptedException {

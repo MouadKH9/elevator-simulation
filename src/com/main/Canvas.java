@@ -28,7 +28,7 @@ public class Canvas extends JPanel {
 	int rectHeight = 50;
 
 	public static int WIDTH = 750;
-	public static int HEIGHT = 820;
+	public static int HEIGHT = 850;
 
 	boolean hovered = false;
 
@@ -111,7 +111,7 @@ public class Canvas extends JPanel {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		});
+		},"Add Persons");
 		thread.start();
 	}
 
@@ -121,8 +121,11 @@ public class Canvas extends JPanel {
 
 		Graphics2D g2d = (Graphics2D) g;
 
-		g2d.setColor(new Color(25, 163, 255));
+		g2d.setColor(new Color(72, 47, 247));
 		g2d.fillRect(0, 0, WIDTH, HEIGHT);
+		
+		
+		
 
 		floors.forEach(f -> f.draw(g2d));
 
@@ -132,9 +135,12 @@ public class Canvas extends JPanel {
 
 		this.drawStatus(g2d);
 
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(0, HEIGHT - floors.size() * (Floor.HEIGHT + 7), WIDTH, 3);
+		
 		if (startingScreen)
 			this.drawMenu(g2d);
-
+		
 	}
 
 	public void drawMenu(Graphics2D g2d) {
@@ -172,11 +178,10 @@ public class Canvas extends JPanel {
 		g2d.drawString(title, WIDTH / 2 - titleWidth / 2, 32);
 
 		g2d.setFont(new Font("Arial", Font.PLAIN, 22));
-		g2d.drawString("Personnes en attente: " + getWaitingNumber(), 10, 62);
-		g2d.drawString("Personnes dans l'ascenseur: " + (elevator1.getPersonsCount() + elevator1.getPersonsCount()), 10,
-				84);
-		g2d.drawString("Ascenseur gauche au étage #" + elevator2.getCurrentFloor(), 10, 106);
-		g2d.drawString("Ascenseur droit au étage #" + elevator1.getCurrentFloor(), 10, 128);
+		g2d.drawString("Personnes en attente: " + getWaitingNumber(), 10, 70);
+		g2d.drawString("Personnes dans l'ascenseur: " + (elevator1.getPersonsCount() + elevator1.getPersonsCount()), 10, 92);
+		g2d.drawString("Ascenseur gauche au étage #" + elevator2.getCurrentFloor(), 10, 114);
+		g2d.drawString("Ascenseur droit au étage #" + elevator1.getCurrentFloor(), 10, 136);
 
 	}
 }

@@ -111,7 +111,7 @@ public class Elevator extends Platform {
 		String direction = elevatorY - Y > 0 ? "up" : "down";
 		ArrayList<DestCall> extraDests = new ArrayList<DestCall>();
 		while (elevatorY < Y - 5 || elevatorY > Y + 5) {
-			Thread.sleep(50);
+			Thread.sleep(40);
 			this.elevatorY += 5 * ((elevatorY < Y - 5) ? 1 : -1);
 			canvas.repaint();
 
@@ -198,7 +198,7 @@ public class Elevator extends Platform {
 
 	@Override
 	public String toString() {
-		return "E#" + getNumber();
+		return "E" + getNumber();
 	}
 
 	public int getCurrentFloor() {

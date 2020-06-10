@@ -66,13 +66,13 @@ public class Floor extends Platform {
 		int ceilingY = canvas.getBounds().height - (number + 1) * HEIGHT;
 		int startX = Elevator.WIDTH;
 
-		g2d.setColor(new Color(0, 45, 119));
+		g2d.setColor(new Color(45, 108, 223));
 		g2d.fillRect(startX, ceilingY, WIDTH, HEIGHT);
 
-		g2d.setColor(new Color(150, 55, 0));
+		g2d.setColor(new Color(243, 241, 105));
 		g2d.fillRect(startX, ceilingY, WIDTH, 3);
 
-		g2d.setColor(new Color(255, 93, 0));
+		g2d.setColor(new Color(216, 213, 0));
 		g2d.fillRect(startX, ceilingY + HEIGHT - 6, WIDTH, 6);
 
 		g2d.setFont(new Font("Arial", Font.PLAIN, 23));
@@ -86,7 +86,7 @@ public class Floor extends Platform {
 
 	@Override
 	public String toString() {
-		return "F#" + number;
+		return "F" + number;
 	}
 
 	public Canvas getCanvas() {
